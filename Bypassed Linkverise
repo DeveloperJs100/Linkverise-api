@@ -1,0 +1,46 @@
+async function bypassLinkvertise(url) {
+    try {
+        // Fetch the page content
+        const response = await fetch(url);
+        const text = await response.text();
+
+        // Regex to extract bypass URL (customize based on the actual page structure)
+        const regex = /window\.location\.href\s*=\s*['"]([^'"]+)['"]/;
+        const match = regex.exec(text);
+
+        if (match && match[1]) {
+            // Extract the bypassed URL
+            const bypassedURL = match[1];
+
+            // Return the bypassed URL directly (no need to encode unless required for specific use)
+            return bypassedURL;
+        } else {
+            throw new Error('Unable to find bypass URL.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
+}
+
+// Function to get and handle the bypassed URL
+async function handleBypassedLink(url) {
+    const bypassedURL = await bypassLinkvertise(url);
+
+    if (bypassedURL) {
+        // Optionally encode the URL if needed
+        const encodedURL = encodeURIComponent(bypassedURL);
+        console.log('Bypassed URL:', bypassedURL);
+        console.log('Encoded Bypassed URL:', encodedURL);
+        
+        // Optionally fetch the bypassed URL if needed
+        const response = await fetch(bypassedURL);
+        const resultText = await response.text();
+        console.log('Response from Bypassed URL:', resultText);
+    } else {
+        console.log('Failed to retrieve bypassed URL.');
+    }
+}
+
+// Usage example
+handleBypassedLink('https://linkvertise.com/514008/hydrogen-gateway-1');
